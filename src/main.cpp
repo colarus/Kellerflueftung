@@ -1,8 +1,9 @@
 
-// Neue Formel:
+// taken from https://carnotcycle.wordpress.com/2012/08/04/how-to-convert-relative-humidity-to-absolute-humidity/
+// precision is about 0.1°C in range -30 to 35°C
 // T=Lufttemperatur
 // rh=relative Feuchte
-// Abs. Feuchte=(6.112 * (2.71828 ** ((17.67 * T)/(T + 243.5)) * rh * 2.1674)/(273.15 + T)
+// Abs. Feuchte (g/m³)=(6.112 * (2.71828 ** ((17.67 * T)/(T + 243.5)) * rh * 2.1674)/(273.15 + T)
 
 
 
@@ -140,10 +141,11 @@ void loop()
     }
     else
     {
-      if ((h2oIndoor - h2oOutdoor) > 3.5 ) // lüften wenn Aussenluft mind. 3,5g weniger Wasser pro ccm enthält als Innenluft
+      if ((h2oIndoor - h2oOutdoor) > 3.5 ) // lüften wenn Aussenluft mind. 3,5g weniger Wasser/m³ enthält als Innenluft
       {
-        // Innenentemperatur Zwischen +5 und +20 Grad halten und
-        if ((tIndoor < 5 && tOutdoor >= tIndoor )|| (tIndoor  > 20 && tOutdoor <= tIndoor  ) )     
+        // Innenentemperatur möglichst zwischen +5 und +20 Grad halten,
+        // aber lüften wenn Aussenluft über 7g weniger Wasser/m³enthält als Innenluft
+        if ((tIndoor < 5 && tOutdoor >= tIndoor )|| (tIndoor  > 20 && tOutdoor <= tIndoor  ) ||((h2oIndoor-h2oOutdoor)>7))     
         {
           Serial.print("Aussenluft ");
           Serial.print(h2oIndoor - h2oOutdoor);
