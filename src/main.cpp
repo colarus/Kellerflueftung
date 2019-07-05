@@ -144,8 +144,8 @@ void loop()
       if ((h2oIndoor - h2oOutdoor) > 3.5 ) // lüften wenn Aussenluft mind. 3,5g weniger Wasser/m³ enthält als Innenluft
       {
         // Innenentemperatur möglichst zwischen +5 und +20 Grad halten,
-        // aber lüften wenn Aussenluft über 7g weniger Wasser/m³enthält als Innenluft
-        if ((tIndoor < 5 && tOutdoor >= tIndoor )|| (tIndoor  > 20 && tOutdoor <= tIndoor  ) ||((h2oIndoor-h2oOutdoor)>7))     
+        // aber lüften wenn Aussenluft über 10g weniger Wasser/m³enthält als Innenluft
+        if ((tIndoor < 5 && tOutdoor >= tIndoor )|| (tIndoor  > 20 && tOutdoor <= tIndoor  ) ||((h2oIndoor-h2oOutdoor)>10))     
         {
           Serial.print("Aussenluft ");
           Serial.print(h2oIndoor - h2oOutdoor);
