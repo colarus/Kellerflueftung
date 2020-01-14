@@ -141,49 +141,45 @@ void loop()
     }
     else
     {
-      if ((h2oIndoor - h2oOutdoor) > 3.5 ) // lüften wenn Aussenluft mind. 3,5g weniger Wasser/m³ enthält als Innenluft
+      // lüften wenn Aussenluft mind. 3,5g weniger Wasser/m³ enthält als Innenluft
+      // Innenentemperatur möglichst zwischen +5 und +20 Grad halten,
+      // aber lüften wenn Aussenluft über 10g weniger Wasser/m³enthält als Innenluft
+      if ((tIndoor > 5 && tOutdoor <= 20 && (h2oIndoor - h2oOutdoor) > 3.5) // Innentemp über 5 und draußen kleiner 20
+       || (tIndoor < 5 && tIndoor <= tOutdoor && (h2oIndoor - h2oOutdoor) > 3.5) // Innentemp weniger als 5 und draußen wärmer   
+       || (tIndoor > 20 && tIndoor <= tOutdoor && (h2oIndoor - h2oOutdoor) > 10) // Innentemp über 20, draußen wärmer, aber mehr als 10g unterschied
+       || (tIndoor > 20 && tIndoor >= tOutdoor && (h2oIndoor - h2oOutdoor) > 3.5)) // Innentemp über 20 und draußen kälter
       {
-        // Innenentemperatur möglichst zwischen +5 und +20 Grad halten,
-        // aber lüften wenn Aussenluft über 10g weniger Wasser/m³enthält als Innenluft
-        if ((tIndoor < 5 && tOutdoor >= tIndoor )|| (tIndoor  > 20 && tOutdoor <= tIndoor  ) ||((h2oIndoor-h2oOutdoor)>10))     
-        {
-          Serial.print("Aussenluft ");
-          Serial.print(h2oIndoor - h2oOutdoor);
-          Serial.println("g trockener!");
-          Serial.println("Lüftung an seit ");
-          Serial.print(iMinuten);
-          Serial.print(" Minuten");
+        Serial.print("Aussenluft ");
+        Serial.print(h2oIndoor - h2oOutdoor);
+        Serial.println("g trockener!");
+        Serial.println("Lüftung an seit ");
+        Serial.print(iMinuten);
+        Serial.print(" Minuten");
 
-          luefterAN(); // Strom an! Lüftung läuft!
-          delay(60000); // 1 min lüften
-          iMinuten = iMinuten + 1; //Minutenzähler +1 Minute
-        }
-        else
-        {
-          // Lüftung aus wenn Temperatur nicht stimmt
-          luefterAUS();
-          delay(600000); //10 min Pause
-        }
+        luefterAN(); // Strom an! Lüftung läuft!
+        delay(60000); // 1 min lüften
+        iMinuten = iMinuten + 1; //Minutenzähler +1 Minute
       }
       else
       {
-        //Lüftung aus wenn Luft nicht trocken genug
+        // Lüftung aus wenn Temperatur nicht stimmt
         luefterAUS();
         delay(600000); //10 min Pause
       }
     }
   } // Ende While
 
-  if (iMinuten == 60) // Falls 60 Minuten gelüftet
+  if (iMinuten == 60) // Falls 60 Minuten gelüftet Lüftung ausschalten
   {
-    // Lüftung ausschalten
     luefterAUS(); // Strom aus!
     delay(600000); // 10 min pause
-  } else
+  } 
+  else
   {
     // Ausstieg bei fehlerhaften Werten 10 sek. warten vor erneut Prüfung
     delay(10000);
   }
+
 }// End loop
 
 
